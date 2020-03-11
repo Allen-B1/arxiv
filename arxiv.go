@@ -17,7 +17,7 @@ type Author struct {
 	Affiliation string
 }
 
-// Type Paper represente metadata information about a paper.
+// Type Paper represents metadata information about a paper.
 type Paper struct {
 	URL string
 	DOI string
@@ -32,13 +32,14 @@ type Paper struct {
 
 	Authors []Author
 
-	// Typically contains the number of pages, number of figures, and the document format
+	// Author's comment
 	Comment string
 	// Number of pages. 0 if not specified.
 	Pages uint
 }
 
 // Method ID returns the arXiv ID of the paper.
+// For more information, see https://arxiv.org/help/arxiv_identifier.
 func (p *Paper) ID() string {
 	i := strings.Index(p.URL, "/abs/")
 	if i < 0 {
@@ -55,22 +56,31 @@ func (p *Paper) ID() string {
 	return id
 }
 
+// Type Query represents the parameters that are sent to a search query.
 type Query struct {
-	// search_query parameter. For more information on its construction, see https://arxiv.org/help/api/user-manual#query_details
+	// search_query parameter. For more information
+	// on its construction, see
+	// https://arxiv.org/help/api/user-manual#query_details
+	// Optional
 	Query string
+
 	// List of arXiv IDs
+	// Optional
 	IDList []string
 
 	// Index of first search result
+	// Required
 	Start uint
 
 	// Maximum number of results. Must satisfy 0 < Max <= 30000
+	// Required
 	Max uint
 }
 
-func NewQuery(search string, start uint, max uint) *Query {
+// Function NewQuery is a convenience method that constructs a search query from a search term.
+func NewQuery(searchTerm string, start uint, max uint) *Query {
 	return &Query{
-		Query:  "all:" + search,
+		Query:  "all:" + searchTerm,
 		IDList: nil,
 		Start:  start,
 		Max:    max,
